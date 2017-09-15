@@ -1,0 +1,5 @@
+# Radio
+BOARD_MODEM_TYPE := mdm9x35
+BOARD_PROVIDES_RILD := true
+
+BOARD_ROOT_EXTRA_FOLDERS := firmware

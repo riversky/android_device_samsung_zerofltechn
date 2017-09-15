@@ -1,0 +1,20 @@
+type scs, domain, domain_deprecated;
+type scs_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(scs)
+
+# Creates/Talks to qmuxd via the qmux_radio socket.
+qmux_socket(scs);
+
+#Allow IPC binding with ServiceManager & System apps
+binder_use(scs);
+binder_call(scs, system_app);
+binder_call(scs, servicemanager);
+r_dir_file(scs, sysfs_ssr);
+
+allow scs self:{ udp_socket socket } create_socket_perms;
+
+set_prop(scs, radio_prop)
+set_prop(scs, csc_prop)
+set_prop(scs, system_prop)

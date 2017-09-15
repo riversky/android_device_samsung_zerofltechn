@@ -1,0 +1,29 @@
+type connfwexe, domain, domain_deprecated;
+type connfwexe_exec, exec_type, file_type;
+
+file_type_auto_trans(ddexe, system_data_file, ddexe_socket)
+
+# Started by init
+init_daemon_domain(connfwexe)
+
+# Creates/Talks to qmuxd via the qmux_radio socket.
+qmux_socket(connfwexe);
+
+#Allow IPC binding with ServiceManager & System apps
+binder_use(connfwexe);
+binder_call(connfwexe, system_app);
+binder_call(connfwexe, servicemanager);
+r_dir_file(connfwexe, sysfs_ssr);
+
+allow connfwexe self:{ udp_socket socket } create_socket_perms;
+
+allow connfwexe self:capability { setpcap setgid setuid dac_override };
+
+set_prop(connfwexe, radio_prop)
+
+rild_unix_stream_socket(connfwexe)
+
+allow connfwexe ddexe_socket:sock_file { rw_file_perms setattr };
+ddexe_unix_stream_socket(connfwexe)
+
+wakelock_use(connfwexe)

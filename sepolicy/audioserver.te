@@ -1,0 +1,46 @@
+qmux_socket(audioserver);
+binder_use(audioserver)
+
+allow audioserver ssr_device:chr_file r_file_perms;
+allow audioserver sysfs:dir { r_dir_perms };
+allow audioserver sysfs:file { r_file_perms };
+
+r_dir_file(audioserver, sysfs_ssr)
+r_dir_file(audioserver, sysfs_esoc)
+
+allow audioserver sysfs_esoc:file w_file_perms;
+
+binder_call(audioserver, mediaserver)
+binder_call(audioserver, audioserver)
+binder_call(audioserver, audioserver)
+
+#Rule for RILD to talk to peripheral manager
+# use_per_mgr(audioserver);
+
+allow audioserver rild_socket:chr_file r_file_perms;
+#unix_socket_connect(audioserver, audioserver, time_daemon)
+allow audioserver system_health_monitor_device:chr_file r_file_perms;
+
+dontaudit audioserver domain:dir r_dir_perms;
+#allow audioserver time_daemon:unix_stream_socket connectto;
+#r_dir_file(audioserver, netmgrd)
+
+#Allow access to netmgrd socket
+#netmgr_socket(audioserver);
+
+allow audioserver { mediaserver_service audioserver_service }:service_manager find;
+
+# Rule for RILD to talk to peripheral manager
+# use_per_mgr(audioserver);
+
+#diag
+userdebug_or_eng(`
+    diag_use(audioserver)
+')
+
+allow audioserver self:{ socket } { create_socket_perms rw_socket_perms };
+
+r_dir_file(audioserver, imei_efs_file);
+
+set_prop(audioserver, system_prop);
+set_prop(audioserver, audio_prop);

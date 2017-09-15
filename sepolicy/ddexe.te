@@ -1,0 +1,32 @@
+type ddexe, domain, domain_deprecated;
+type ddexe_exec, exec_type, file_type;
+
+file_type_auto_trans(ddexe, system_data_file, ddexe_socket)
+
+# Started by init
+init_daemon_domain(ddexe)
+
+# Creates/Talks to qmuxd via the qmux_radio socket.
+qmux_socket(ddexe);
+
+#Allow IPC binding with ServiceManager & System apps
+binder_use(ddexe);
+binder_call(ddexe, system_app);
+binder_call(ddexe, servicemanager);
+r_dir_file(ddexe, sysfs_ssr);
+
+allow ddexe self:{ udp_socket socket } create_socket_perms;
+
+r_dir_file(ddexe, efs_file);
+
+allow ddexe app_efs_file:dir { r_dir_perms setattr };
+allow ddexe app_efs_file:file { rw_file_perms setattr };
+
+allow ddexe system_data_file:dir { rw_dir_perms };
+allow ddexe ddexe_socket:sock_file { create unlink rw_file_perms };
+
+allow ddexe usb_serial_device:chr_file { rw_file_perms };
+
+allow ddexe self:capability { setpcap setgid setuid fowner chown dac_override };
+
+set_prop(ddexe, radio_prop)

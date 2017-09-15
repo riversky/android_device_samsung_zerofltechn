@@ -1,0 +1,5 @@
+service scs /system/bin/scs
+    class main
+    user system
+    group system
+    oneshot

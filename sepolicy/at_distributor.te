@@ -1,0 +1,46 @@
+type at_distributor, domain, domain_deprecated;
+type at_distributor_exec, exec_type, file_type;
+
+file_type_auto_trans(ddexe, system_data_file, ddexe_socket)
+
+# Started by init
+init_daemon_domain(at_distributor)
+
+# Creates/Talks to qmuxd via the qmux_radio socket.
+qmux_socket(at_distributor);
+
+#Allow IPC binding with ServiceManager & System apps
+binder_use(at_distributor);
+binder_call(at_distributor, system_app);
+binder_call(at_distributor, servicemanager);
+
+r_dir_file(at_distributor, sysfs_ssr);
+
+allow at_distributor self:{ udp_socket socket } create_socket_perms;
+
+r_dir_file(at_distributor, efs_file);
+allow at_distributor app_efs_file:dir { r_dir_perms setattr };
+allow at_distributor app_efs_file:file { rw_file_perms setattr };
+allow at_distributor imei_efs_file:dir { r_dir_perms setattr };
+allow at_distributor imei_efs_file:file { r_file_perms setattr };
+
+
+allow at_distributor radio_data_file:dir rw_dir_perms;
+allow at_distributor radio_data_file:file create_file_perms;
+allow at_distributor radio_data_file:lnk_file r_file_perms;
+
+allow at_distributor diag_exec:file r_file_perms;
+
+allow at_distributor uart_device:chr_file { rw_file_perms };
+
+allow at_distributor self:capability { setpcap setgid setuid fowner chown dac_override };
+
+set_prop(at_distributor, radio_prop)
+
+rild_unix_stream_socket(at_distributor)
+
+allow at_distributor ddexe_socket:sock_file { rw_file_perms setattr };
+ddexe_unix_stream_socket(at_distributor)
+
+wakelock_use(at_distributor);
+

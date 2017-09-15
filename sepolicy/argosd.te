@@ -1,0 +1,19 @@
+type argosd, domain, domain_deprecated;
+type argosd_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(argosd)
+
+# Creates/Talks to qmuxd via the qmux_radio socket.
+qmux_socket(argosd);
+
+#Allow IPC binding with ServiceManager & System apps
+binder_use(argosd);
+binder_call(argosd, system_app);
+binder_call(argosd, servicemanager);
+r_dir_file(argosd, sysfs_ssr);
+
+allow argosd self:{ udp_socket socket } create_socket_perms;
+allow argosd radio_device:chr_file rw_file_perms;
+
+set_prop(argosd, radio_prop)

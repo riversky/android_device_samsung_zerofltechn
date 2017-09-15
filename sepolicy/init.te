@@ -1,0 +1,5 @@
+allow init firmware_file:dir { mounton };
+allow init imsd_socket:sock_file { create };
+
+# LD_SHIM_LIBS: use noatsecure for shimmed binary
+allow init fingerprintd:process noatsecure;

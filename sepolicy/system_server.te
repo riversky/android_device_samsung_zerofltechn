@@ -1,0 +1,5 @@
+# GPS socket
+qmux_socket(system_server);
+
+allow system_server persdata_data_file:dir { rw_dir_perms };
+allow system_server persdata_data_file:file { rw_file_perms };

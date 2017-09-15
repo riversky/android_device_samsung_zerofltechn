@@ -1,0 +1,21 @@
+type imsd, domain, domain_deprecated;
+type imsd_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(imsd)
+
+# Creates/Talks to qmuxd via the qmux_radio socket.
+qmux_socket(imsd);
+dnsproxy_socket(imsd)
+
+#Allow IPC binding with ServiceManager & System apps
+binder_use(imsd);
+binder_call(imsd, system_app);
+binder_call(imsd, servicemanager);
+r_dir_file(imsd, sysfs_ssr);
+
+allow imsd self:{ udp_socket socket } create_socket_perms;
+
+allow imsd self:capability { setpcap setgid setuid };
+
+set_prop(imsd, radio_prop)
