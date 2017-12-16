@@ -3,3 +3,4 @@ allow init imsd_socket:sock_file { create };
 
 # LD_SHIM_LIBS: use noatsecure for shimmed binary
 allow init fingerprintd:process noatsecure;
+allow init imsd:process noatsecure;
